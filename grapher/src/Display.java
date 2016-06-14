@@ -47,7 +47,6 @@ public class Display extends JPanel {
         double i, j, k; //points for plotting in 3d
         int h = (int) screenSize.getHeight();
         int w = (int) screenSize.getWidth();
-
         double cosA = Math.cos(aRotation);
         double cosB = Math.cos(bRotation);
         double cosC = Math.cos(cRotation);
@@ -120,11 +119,10 @@ public class Display extends JPanel {
     }
 
     /**
-     * ???
-     * @param x
-     * @param y
-     * @return
-     * @throws Exception
+    This is the 3D function that, to this point, must be changed in code for every new function.
+    The reply is attained, then checked if it is a real number (the java.math class puts all outputs
+    that don't comply with rules (like negative log) into this cateragory. It will throw an exception
+    if its not a real number, which is then handled above
      */
     public double function(double x, double y) throws Exception {
         double reply = Math.sqrt(25 - x * x - y * y);
@@ -136,28 +134,16 @@ public class Display extends JPanel {
     }
 
     /**
-     * ???
-     * @param x
-     * @param y
-     * @param z
-     * @param tX
-     * @param tY
-     * @param tZ
-     * @return
+    this is the method to transform 3D points into perspective 2D based on the Xx, Yx, etc constants detailed above. I use tX, tY, etc
+    as generalized variables (tX can represent either Xx or Xy depending on how its used. Xx, Xy, etc are explained where they are calculated)
      */
     public double transform(double x, double y, double z, double tX, double tY, double tZ) {
         return (tX * x + tY * y + tZ * z);
     }
 
     /**
-     * ???
-     * @param g
-     * @param Xx
-     * @param Yx
-     * @param Zx
-     * @param Xy
-     * @param Yy
-     * @param Zy
+     * Uses the coordinate axes to find 4 3d points on the 3 axis and origin, transform them to 2d, and then connect them with a line
+     * segment to make that axis.
      */
     public void drawCoordinateAxes(Graphics g, double Xx, double Yx, double Zx, double Xy, double Yy, double Zy) {
         Point<Integer> origin = getReversePoints(transform(0, 0, 0, Xx, Yx, Zx), transform(0, 0, 0, Xy, Yy, Zy));
@@ -175,14 +161,11 @@ public class Display extends JPanel {
     }
 
     /**
-     * ???
-     * @param g
-     * @param Xx
-     * @param Yx
-     * @param Zx
-     * @param Xy
-     * @param Yy
-     * @param Zy
+     * Unlike the transform method, all of the transforming variables must be lent down from above in order to be used in this
+     * finder method. The finder method will draw a little rectangle in #D space connected by line segments in x, y, z, axes and will turn
+     * pink if it is on a point of the 3D function. Thats why the parameters are so extensive. I could, of course, had made those parameters public variables
+     * outside of paintCompnent, but it looked confusing for a, b, and c (the rotating toggles) that are used for Xx, Xy,Xz, etc are already out there.
+        Matcher tells drawFinder whether the point finder is on a point in the function.
      * @param matcher
      */
     public void drawFinder(Graphics g, double Xx, double Yx, double Zx, double Xy, double Yy, double Zy, boolean matcher) {
@@ -204,17 +187,10 @@ public class Display extends JPanel {
     }
 
     /**
-     * ???
-     * @param g
-     * @param i
-     * @param j
-     * @param k
-     * @param Xx
-     * @param Yx
-     * @param Zx
-     * @param Xy
-     * @param Yy
-     * @param Zy
+     * The reason why the parameters for this function are long is the same for draw finder (read above). This function will draw a
+     * polygon connecting four points in a 3D plane that are part of the function. It will then calculate the shade of that polygon
+     * based on its distance from the light point, also instantiated above. This point is mobile, so we can move the source of light to give
+     * a realistic shading to these polygons.
      */
     public void drawRectangleAtPoint(Graphics g, double i, double j, double k, double Xx, double Yx, double Zx, double Xy, double Yy, double Zy) {
         g.setColor(ColorAtPoint(i, j, k));
@@ -232,11 +208,7 @@ public class Display extends JPanel {
     }
 
     /**
-     * ???
-     * @param i
-     * @param j
-     * @param k
-     * @return
+     * THis just takes the distance away from the light point and uses that with the color pallette to distribute the colors.
      */
     public Color ColorAtPoint(double i, double j, double k) {
         double distance = Math.pow((lightX - i) * (lightX - i) + (lightY - j) * (lightY - j) + (lightZ - k) * (lightZ - k), .5);
