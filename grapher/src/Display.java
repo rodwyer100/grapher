@@ -17,7 +17,9 @@ public class Display extends JPanel {
 
     private Exception SquareRootLessThanZeroException = new Exception("Trying to take a square root of a number less than zero");
 
-    //What do these do?
+    //cubeVision etablished a square wherein the x and y variables are modeled, the multiplier is used to reverse operations
+    //done by buttons so that I cut my number of buttons needed in half, sX,sy,and Sz are the variables for the finder point, useful for
+    //knowing if a point is on the graph, abd lightX,Y,Z is the position of a fake light source from which things are shaded.
     double cubeVision = 10;
     double multiplier = 1;
     double sX = 0;
@@ -47,6 +49,7 @@ public class Display extends JPanel {
         double i, j, k; //points for plotting in 3d
         int h = (int) screenSize.getHeight();
         int w = (int) screenSize.getWidth();
+        //The rest of this is 
         double cosA = Math.cos(aRotation);
         double cosB = Math.cos(bRotation);
         double cosC = Math.cos(cRotation);
