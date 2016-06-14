@@ -29,7 +29,7 @@ public class Display extends JPanel
     double yTranslation = 0;//Bottom of screen is (initially) at zero
     public Display(){
     }
-    public void paintComponent(Graphics g){
+        public void paintComponent(Graphics g){
       super.paintComponent(g);//clears the screen;
       boolean matcher = false;
       g.setColor(Color.black);
@@ -44,7 +44,8 @@ public class Display extends JPanel
       //Now for any point in 3D, the point on this plane is composed of those transformations times the actual point
       for(i = -cubeVision; i<cubeVision; i+=.1){
       for(j = -cubeVision; j<cubeVision; j+=.1){
-      k = function(i,j);
+      try{k = function(i,j);}
+      catch(Exception e){continue;}
       if((Math.abs(sX-i)<.1)&&(Math.abs(sY-j)<.1)&&(Math.abs(sZ-k)<.1)){matcher = true;}
       drawRectangleAtPoint(g,i,j,k,Xx,Yx,Zx,Xy,Yy,Zy);
       }
@@ -81,8 +82,9 @@ public class Display extends JPanel
     this.setCenter(center);//makes a center NOTE: should base how different a point should be from the last by the scale, so that things still make sense (smaller the scale,
     //more defined it ought to be
     }
-    public double function(double x, double y){
-    return x*x + y*y;
+    public double function(double x, double y) throws Exception{
+     double reply = Math.sqrt(25-x*x-y*y);
+     if(!Double.isNaN(reply)){return reply;} else {throw new NullPointerException();}
     }
     public double transform(double x, double y, double z, double tX, double tY, double tZ){
      return (tX*x+tY*y+tZ*z);
@@ -117,11 +119,13 @@ public class Display extends JPanel
     public void drawRectangleAtPoint(Graphics g, double i, double j, double k, double Xx,double Yx, double Zx, double Xy,double Yy,double Zy){
       g.setColor(ColorAtPoint(i,j,k));
       Point<Integer> coor = getReversePoints(transform(i,j,k,Xx,Yx,Zx),transform(i,j,k,Xy,Yy,Zy));
+      try{
       Point<Integer> coor2 = getReversePoints(transform(i+.2,j,function(i+.2,j),Xx,Yx,Zx),transform(i+.2,j,function(i+.2,j),Xy,Yy,Zy));
       Point<Integer> coor3 = getReversePoints(transform(i,j+.2,function(i,j+.2),Xx,Yx,Zx),transform(i,j+.2,function(i,j+.2),Xy,Yy,Zy));
-      Point<Integer> coor4 = getReversePoints(transform(i+.2,j+.2,function(i+.2,j+.2),Xx,Yx,Zx),transform(i+.2,j+.2,function(i+.2,j+.2),Xy,Yy,Zy));
+      Point<Integer> coor4 = getReversePoints(transform(i+.2,j+.2,function(i+.2,j+.2),Xx,Yx,Zx),transform(i+.2,j+.2,function(i+.2,j+.2),Xy,Yy,Zy)); 
       int [] xArray ={coor.x,coor2.x,coor3.x,coor4.x}; int [] yArray = {coor.y, coor2.y, coor3.y, coor4.y};
-      g.fillPolygon(xArray,yArray,4);
+      g.fillPolygon(xArray,yArray,4);}
+      catch ( Exception e){return;}
     }
     public Color ColorAtPoint(double i, double j , double k){
     double distance = Math.pow((lightX-i)*(lightX-i) +  (lightY-j)*(lightY-j) + (lightZ-k)*(lightZ-k), .5);
